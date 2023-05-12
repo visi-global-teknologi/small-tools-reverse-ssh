@@ -1,22 +1,16 @@
 #!/bin/bash
 
-logFile="/home/ubuntu/try-n-error/test-command-linux/crontab.log"
-logMessage="This is a new log message."
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=reverse_ssh_monitoring
+DB_USERNAME=root
+DB_PASSWORD=
+DEVICE_ID=1
 
-# Add timestamp to the log message
-logMessage="$(date "+%Y-%m-%d %H:%M:%S") - $logMessage"
+# Execute a SQL query using mysql client
+query="SELECT * FROM $TABLE_NAME WHERE id = $DEVICE_ID;"
+result=$(mysql -h "$DB_HOST" -u "$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" -e "$query")
 
-# Write the log message to the file
-echo "$logMessage" >> "$logFile"
-
-port=3387
-# Get the process ID (PID) associated with the port
-pid=$(lsof -ti :$port)
-
-if [ -z "$pid" ]; then
-    echo "No process found running on port $port." >> "$logFile"
-else
-    # Kill the process
-    echo "Killing process with PID: $pid" >> "$logFile"
-    kill $pid
-fi
+# Print the query result
+echo "$result"
