@@ -6,7 +6,7 @@ DB_PORT=3306
 DB_DATABASE=reverse_ssh_monitoring
 DB_USERNAME=root
 DB_PASSWORD=""
-DEVICE_ID=1
+DEVICE_ID="1"
 
 # Execute a SQL query using mysql client
 query="SELECT * FROM $TABLE_NAME WHERE id = $DEVICE_ID;"
