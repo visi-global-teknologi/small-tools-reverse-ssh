@@ -10,10 +10,10 @@ def call_bat(full_path_bat_file, app_runner):
 
 api_url = "http://localhost:80/api/public/rssh-logs"
 unique_code_device = "v7cnp"
+batch_file = r"C\:Users\Administrator\Documents\wim\reverse_ssh.bat"
+app_runner = 'cmd.exe'
 
 try:
-    batch_file = r"C\:Users\Administrator\Documents\wim\reverse_ssh.bat"
-    app_runner = 'cmd.exe'
     call_bat(batch_file, app_runner)
     post_data_to_api(api_url, unique_code_device, "success re run file bat", 'no')
 except subprocess.CalledProcessError as e:
