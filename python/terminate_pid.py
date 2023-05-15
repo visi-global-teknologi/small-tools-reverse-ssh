@@ -104,7 +104,7 @@ def terminate_process_by_port(session, port, rssh_connection_id):
         if output:
             pid = int(output)
             subprocess.call(["kill", "-9", str(pid)])
-            log = f"Terminated process with PID: {pid}"
+            log = f"Sucess terminated process with PID: {pid}"
             create_cron_log(session, log, "no", rssh_connection_id)
         else:
             log = f"No process found with the specified port : {port}"
