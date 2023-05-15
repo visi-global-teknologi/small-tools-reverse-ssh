@@ -41,7 +41,6 @@ class DeviceModel(Base):
         self.unique_code = unique_code
         self.active_status = active_status
 
-
 # Define the rssh connection model
 class RSSHConnectionModel(Base):
     __tablename__ = "rssh_connections"
@@ -81,10 +80,9 @@ session = Session()
 request_terminate_connection_status_id = 3
 
 # create data cron log
-def create_cron_log(session, log, is_error="yes"):
-    new_data = CronLogModel(file_name="terminate_pid.py", log=log, is_error=is_error)
+def create_cron_log(session, log, is_error, rssh_connection_id):
+    new_data = CronLogModel(file_name="terminate_pid.py", log = log, is_error = is_error, rssh_connection_id = rssh_connection_id)
     session.add(new_data)
-
 
 # function for terminate process linux by port
 def terminate_process_by_port(session, port, rssh_connection_id):
@@ -97,13 +95,13 @@ def terminate_process_by_port(session, port, rssh_connection_id):
             pid = int(output)
             subprocess.call(["kill", "-9", str(pid)])
             log = f"Terminated process with PID: {pid}"
-            create_cron_log(session, log, "no")
+            create_cron_log(session, log, "no", rssh_connection_id)
         else:
             log = f"No process found with the specified port : {port}"
-            create_cron_log(session, log, "yes")
+            create_cron_log(session, log, "yes", rssh_connection_id)
     except subprocess.CalledProcessError:
         log = f"Error executing the lsof command : lsof -t -i : {port}"
-        create_cron_log(session, log, "yes")
+        create_cron_log(session, log, "yes", rssh_connection_id)
 
 
 # Query the rss_connections table with the condition
