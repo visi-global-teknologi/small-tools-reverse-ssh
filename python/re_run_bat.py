@@ -81,7 +81,7 @@ if not connection_status_rssh:
 
 try:
     path = os.environ.get("PATH_DIRECTORY_BATCH_FILE")
-    batch_file = r"C:{}\bat\reverse_ssh.bat".format(path)
+    batch_file = r"C:\{}\bat\reverse_ssh.bat".format(path)
     app_runner = os.environ.get("CMD_EXE")
     subprocess.call([app_runner, '/c', batch_file])
     log = 'success re run file bat'
