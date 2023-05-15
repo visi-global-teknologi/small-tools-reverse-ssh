@@ -5,6 +5,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.mysql import BIGINT
 from dotenv import load_dotenv
 
+# request terminate connection status id
+request_terminate_connection_status_id = 3
+
 # Load the environment variables from .env file
 load_dotenv()
 
@@ -28,23 +31,19 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 # Define the device model
-class DeviceModel(Base):
-    __tablename__ = "devices"
-    id = Column(Integer, primary_key=True)
+class ConnectionStatusModel(Base):
+    __tablename__ = "connection_statuses"
+    id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String)
-    unique_code = Column(String)
-    active_status = Column(Enum("no", "yes", name="active_status"))
 
-    def __init__(self, id, name, unique_code, active_status):
+    def __init__(self, id, name):
         self.id = id
         self.name = name
-        self.unique_code = unique_code
-        self.active_status = active_status
 
 # Define the rssh connection model
 class RSSHConnectionModel(Base):
     __tablename__ = "rssh_connections"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     server_port = Column(String)
     local_port = Column(String)
     device_id = Column(BIGINT(unsigned=True))
@@ -60,7 +59,7 @@ class RSSHConnectionModel(Base):
 # Define the cron log model
 class CronLogModel(Base):
     __tablename__ = "cron_logs"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, autoincrement=True, primary_key=True)
     file_name = Column(String)
     log = Column(String)
     is_error = Column(Enum("no", "yes", name="is_error"))
@@ -75,9 +74,6 @@ class CronLogModel(Base):
 
 # Connect to the database
 session = Session()
-
-# request terminate connection status id
-request_terminate_connection_status_id = 3
 
 # create data cron log
 def create_cron_log(session, log, is_error, rssh_connection_id):
@@ -103,6 +99,12 @@ def terminate_process_by_port(session, port, rssh_connection_id):
         log = f"Error executing the lsof command : lsof -t -i : {port}"
         create_cron_log(session, log, "yes", rssh_connection_id)
 
+def update_status_rss_connection(session, rssh_connection_id):
+    connection_status = session.query(ConnectionStatusModel).filter_by(name="terminated").first()
+    session.query(RSSHConnectionModel).filter(RSSHConnectionModel.id == rssh_connection_id).update(
+        {RSSHConnectionModel.connection_status_id: connection_status.name},
+        synchronize_session=False
+    )
 
 # Query the rss_connections table with the condition
 rssh_connections = (
@@ -115,10 +117,9 @@ rssh_connections = (
 if rssh_connections:
     for rsshc in rssh_connections:
         id = rsshc.id
-        print(id)
         server_port = rsshc.server_port
-        print (server_port);
         terminate_process_by_port(session, server_port, id)
+        update_status_rss_connection()
 else:
     print("No request to dismiss PID")
 
