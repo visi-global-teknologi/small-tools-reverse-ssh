@@ -36,10 +36,6 @@ class ConnectionStatusModel(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String)
 
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
 # Define the rssh connection model
 class RSSHConnectionModel(Base):
     __tablename__ = "rssh_connections"
@@ -48,13 +44,6 @@ class RSSHConnectionModel(Base):
     local_port = Column(String)
     device_id = Column(BIGINT(unsigned=True))
     connection_status_id = Column(BIGINT(unsigned=True))
-
-    def __init__(self, id, server_port, local_port, device_id, connection_status_id):
-        self.id = id
-        self.server_port = server_port
-        self.local_port = local_port
-        self.device_id = device_id
-        self.connection_status_id = connection_status_id
 
 # Define the cron log model
 class CronLogModel(Base):
@@ -65,8 +54,7 @@ class CronLogModel(Base):
     is_error = Column(Enum("no", "yes", name="is_error"))
     rssh_connection_id = Column(BIGINT(unsigned=True))
 
-    def __init__(self, id, file_name, log, is_error, rssh_connection_id):
-        self.id = id
+    def __init__(self, file_name, log, is_error, rssh_connection_id):
         self.file_name = file_name
         self.log = log
         self.is_error = is_error
