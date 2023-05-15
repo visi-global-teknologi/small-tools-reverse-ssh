@@ -72,9 +72,9 @@ if connection_status_rssh == "disconnected":
     status_re_run_file_bat = True
 
 if connection_status_rssh == "terminated":
-    status_terminate_plink_exe = True
+    status_re_run_file_bat = True
 
-if not status_terminate_plink_exe:
+if not connection_status_rssh:
     message = "no connection status required for re-run file bat"
     post_data_log_to_server(unique_code_device, message, 'no')
     sys.exit(0)
