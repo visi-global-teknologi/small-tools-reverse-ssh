@@ -115,6 +115,7 @@ rssh_connections = (
 if rssh_connections:
     for rsshc in rssh_connections:
         id = rsshc.id
+        print(id)
         server_port = rsshc.server_port
         print (server_port);
         terminate_process_by_port(session, server_port, id)
