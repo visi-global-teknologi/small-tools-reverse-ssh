@@ -108,7 +108,8 @@ if rssh_connections:
         local_port = rsshc.local_port
         terminate_process_by_port(session, local_port, id)
 else:
-    print("No request to dismiss PID")
+    log = "No request to dismiss PID"
+    create_cron_log(session, log, "no")
 
 # Close the session
 session.commit()
