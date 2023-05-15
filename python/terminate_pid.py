@@ -11,8 +11,8 @@ load_dotenv()
 # Get the database connection details from environment variables
 db_host = os.environ.get('DB_HOST')
 db_port = os.environ.get('DB_PORT')
-db_name = os.environ.get('DB_NAME')
-db_user = os.environ.get('DB_USER')
+db_name = os.environ.get('DB_DATABASE')
+db_user = os.environ.get('DB_USERNAME')
 db_password = os.environ.get('DB_PASSWORD')
 
 # Define the database connection URL
