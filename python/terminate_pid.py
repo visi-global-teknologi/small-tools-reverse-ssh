@@ -69,7 +69,7 @@ class CronLogModel(Base):
 session = Session()
 
 # create data cron log
-def create_cron_log(session, log, is_error, rssh_connection_id, created_at, updated_at):
+def create_cron_log(session, log, is_error, rssh_connection_id):
     new_data = CronLogModel(
         file_name="terminate_pid.py",
         log = log,
