@@ -119,7 +119,7 @@ if rssh_connections:
         id = rsshc.id
         local_port = rsshc.local_port
         print (local_port);
-        terminate_process_by_port(session, local_port, id)
+        # terminate_process_by_port(session, local_port, id)
 else:
     print("No request to dismiss PID")
 
