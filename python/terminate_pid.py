@@ -1,6 +1,6 @@
 import os
 import subprocess
-from sqlalchemy import create_engine, Column, Integer, String, Enum
+from sqlalchemy import create_engine, Column, Integer, String, Enum, DateTime, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.mysql import BIGINT
 from dotenv import load_dotenv
@@ -54,19 +54,30 @@ class CronLogModel(Base):
     log = Column(String)
     is_error = Column(Enum("no", "yes", name="is_error"))
     rssh_connection_id = Column(BIGINT(unsigned=True))
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, file_name, log, is_error, rssh_connection_id):
+    def __init__(self, file_name, log, is_error, rssh_connection_id, created_at, updated_at):
         self.file_name = file_name
         self.log = log
         self.is_error = is_error
         self.rssh_connection_id = rssh_connection_id
+        self.created_at = created_at
+        self.updated_at = updated_at
 
 # Connect to the database
 session = Session()
 
 # create data cron log
-def create_cron_log(session, log, is_error, rssh_connection_id):
-    new_data = CronLogModel(file_name="terminate_pid.py", log = log, is_error = is_error, rssh_connection_id = rssh_connection_id)
+def create_cron_log(session, log, is_error, rssh_connection_id, created_at, updated_at):
+    new_data = CronLogModel(
+        file_name="terminate_pid.py",
+        log = log,
+        is_error = is_error,
+        rssh_connection_id = rssh_connection_id,
+        created_at = func.now(),
+        updated_at = func.now()
+    )
     session.add(new_data)
 
 # function for terminate process linux by port
