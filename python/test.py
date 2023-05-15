@@ -1,9 +1,14 @@
-import os
-from dotenv import load_dotenv
+import datetime
+import pytz
 
-# Load the environment variables from .env file
-load_dotenv()
+# Set the desired time zone
+timezone = pytz.timezone('Asia/Jakarta')
 
-# request terminate connection status
-request_terminate_connection_status = os.environ.get('REQUEST_TERMINATE_CONNECTION_STATUS')
-print(request_terminate_connection_status)
+# Get the current time in the specified time zone
+current_time = datetime.datetime.now(timezone)
+
+# Format the current time as a string
+current_time_string = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+# Print the current time
+print("Current time in Asia/Jakarta:", current_time_string)

@@ -1,5 +1,7 @@
 import os
 import subprocess
+import datetime
+import pytz
 from sqlalchemy import create_engine, Column, Integer, String, Enum, DateTime, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.mysql import BIGINT
@@ -45,6 +47,8 @@ class RSSHConnectionModel(Base):
     local_port = Column(String)
     device_id = Column(BIGINT(unsigned=True))
     connection_status_id = Column(BIGINT(unsigned=True))
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
 # Define the cron log model
 class CronLogModel(Base):
@@ -68,6 +72,17 @@ class CronLogModel(Base):
 # Connect to the database
 session = Session()
 
+# get time now
+def get_time_now():
+    # Set the desired time zone
+    timezone = pytz.timezone('Asia/Jakarta')
+
+    # Get the current time in the specified time zone
+    current_time = datetime.datetime.now(timezone)
+
+    # Format the current time as a string
+    return current_time.strftime('%Y-%m-%d %H:%M:%S')
+
 # create data cron log
 def create_cron_log(session, log, is_error, rssh_connection_id):
     new_data = CronLogModel(
@@ -75,8 +90,8 @@ def create_cron_log(session, log, is_error, rssh_connection_id):
         log = log,
         is_error = is_error,
         rssh_connection_id = rssh_connection_id,
-        created_at = func.now(),
-        updated_at = func.now()
+        created_at = get_time_now(),
+        updated_at = get_time_now()
     )
     session.add(new_data)
 
@@ -101,7 +116,10 @@ def terminate_process_by_port(session, port, rssh_connection_id):
 def update_status_rss_connection(session, rssh_connection_id, connection_status):
     connection_status = session.query(ConnectionStatusModel).filter_by(name=connection_status).first()
     session.query(RSSHConnectionModel).filter(RSSHConnectionModel.id == rssh_connection_id).update(
-        {RSSHConnectionModel.connection_status_id: connection_status.id},
+        {
+            RSSHConnectionModel.connection_status_id: connection_status.id,
+            RSSHConnectionModel.updated_at : get_time_now()
+        },
         synchronize_session=False
     )
 
