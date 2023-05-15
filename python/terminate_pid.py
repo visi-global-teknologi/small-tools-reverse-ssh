@@ -1,10 +1,22 @@
+import os
 import subprocess
 from sqlalchemy import create_engine, Column, Integer, String, Enum
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.mysql import BIGINT
+from dotenv import load_dotenv
+
+# Load the environment variables from .env file
+load_dotenv()
+
+# Get the database connection details from environment variables
+db_host = os.environ.get('DB_HOST')
+db_port = os.environ.get('DB_PORT')
+db_name = os.environ.get('DB_NAME')
+db_user = os.environ.get('DB_USER')
+db_password = os.environ.get('DB_PASSWORD')
 
 # Define the database connection URL
-db_url = "mysql+mysqlconnector://sail:password@127.0.0.1:3306/rss_monitoring"
+db_url = f'mysql+mysqlconnector://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 
 # Create the SQLAlchemy engine
 engine = create_engine(db_url)
