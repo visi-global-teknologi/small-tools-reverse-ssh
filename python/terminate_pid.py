@@ -1,4 +1,5 @@
 import os
+import pprint
 import subprocess
 from sqlalchemy import create_engine, Column, Integer, String, Enum
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -89,6 +90,8 @@ def terminate_process_by_port(session, port, rssh_connection_id):
 
 def update_status_rss_connection(session, rssh_connection_id):
     connection_status = session.query(ConnectionStatusModel).filter_by(name="terminated").first()
+    pp = pprint.PrettyPrinter(indent=4)  # Create a PrettyPrinter instance with an indentation of 4 spaces
+    pp.pprint(connection_status)
     session.query(RSSHConnectionModel).filter(RSSHConnectionModel.id == rssh_connection_id).update(
         {RSSHConnectionModel.connection_status_id: connection_status.name},
         synchronize_session=False
