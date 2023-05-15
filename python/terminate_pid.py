@@ -95,9 +95,10 @@ def update_status_rss_connection(session, rssh_connection_id, connection_status)
     )
 
 # Query the rss_connections table with the condition
+connection_status = session.query(ConnectionStatusModel).filter_by(name=request_terminate_connection_status).first()
 rssh_connections = (
     session.query(RSSHConnectionModel)
-    .filter_by(connection_status_id=request_terminate_connection_status)
+    .filter_by(connection_status_id=connection_status.id)
     .all()
 )
 
