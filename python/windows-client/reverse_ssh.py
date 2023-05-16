@@ -2,6 +2,12 @@ import os
 import paramiko
 from dotenv import load_dotenv
 
+# Specify the path to the .env file
+env_path = '/.env'
+
+# Load the .env file
+load_dotenv(env_path)
+
 # Reverse SSH configuration
 remote_host = os.environ.get("SERVER_IP")
 remote_port = os.environ.get("SERVER_PORT")
