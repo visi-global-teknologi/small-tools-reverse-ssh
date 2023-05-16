@@ -50,12 +50,12 @@ def send_rssh_log_to_server(unique_code_device, log, is_error):
         print(f"Error occurred: {e}")
         sys.exit(0)
 
-def update_status_rssh_connection(unique_code_device):
+def update_status_rssh_connection(unique_code_device, status):
     try:
         rest_api = os.environ.get("REST_API_RSSH_CONNECTION_UPDATE")
         full_rest_api = rest_api + unique_code_device
         payload = {
-            'status': 'connected'
+            'status': status
         }
         requests.put(full_rest_api, payload)
     except requests.exceptions.RequestException as e:
@@ -91,12 +91,12 @@ if not status_re_run_file_bat:
 try:
     file_bat = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client\reverse_ssh.bat"
     app_runner = os.environ.get("CMD_EXE")
-    subprocess.call([app_runner, '/c', file_bat])
     log = 'success re run file bat'
     send_rssh_log_to_server(unique_code_device, log, 'no')
-    update_status_rssh_connection(unique_code_device)
+    update_status_rssh_connection(unique_code_device, 'connected')
+    subprocess.call([app_runner, '/c', file_bat])
     print("done with ok")
 except Exception as e:
     log = f"An error occurred: {e}"
-    print(log)
     send_rssh_log_to_server(send_rssh_log_to_server, log, 'yes')
+    update_status_rssh_connection(unique_code_device, 'disconnect')
