@@ -3,8 +3,7 @@ import paramiko
 from dotenv import load_dotenv
 
 # Specify the path to the .env file
-path_python = os.environ.get("PATH_DIRECTORY_PYTHON")
-env_file = r"C:\{}\windows-client\.env".format(path_python)
+env_file = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client"
 
 # Load the .env file
 load_dotenv(env_file)
