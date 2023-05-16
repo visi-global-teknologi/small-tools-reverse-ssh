@@ -89,7 +89,7 @@ if not status_re_run_file_bat:
     sys.exit(0)
 
 try:
-    file_bat = os.environ.get("FILE_BAT")
+    file_bat = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client\reverse_ssh.bat"
     app_runner = os.environ.get("CMD_EXE")
     subprocess.call([app_runner, '/c', file_bat])
     log = 'success re run file bat'
