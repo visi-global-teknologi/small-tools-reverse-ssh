@@ -94,6 +94,7 @@ try:
     log = 'success re run file bat'
     send_rssh_log_to_server(unique_code_device, log, 'no')
     update_status_rssh_connection(unique_code_device)
+    print("done with ok")
 except Exception as e:
     log = f"An error occurred: {e}"
     send_rssh_log_to_server(send_rssh_log_to_server, log, 'yes')
