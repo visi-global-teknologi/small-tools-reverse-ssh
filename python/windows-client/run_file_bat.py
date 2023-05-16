@@ -51,7 +51,15 @@ def send_rssh_log_to_server(unique_code_device, log, is_error):
         sys.exit(0)
 
 def update_status_rssh_connection(unique_code_device):
-    print("2345")
+    try:
+        rest_api = os.environ.get("REST_API_RSSH_CONNECTION_UPDATE")
+        full_rest_api = rest_api + unique_code_device
+        payload = {
+            'status': 'connected'
+        }
+        requests.put(full_rest_api, payload)
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred: {e}")
 
 # Load the environment variables from .env file
 load_dotenv()
