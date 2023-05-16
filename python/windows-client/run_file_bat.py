@@ -85,6 +85,7 @@ if last_rssh_connection_status == "terminated":
     status_re_run_file_bat = True
 
 if not last_rssh_connection_status:
+    print(last_rssh_connection_status)
     sys.exit(0)
 
 try:
@@ -97,4 +98,5 @@ try:
     print("done with ok")
 except Exception as e:
     log = f"An error occurred: {e}"
+    print(log)
     send_rssh_log_to_server(send_rssh_log_to_server, log, 'yes')
