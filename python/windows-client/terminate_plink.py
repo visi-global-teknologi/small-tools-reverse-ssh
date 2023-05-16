@@ -3,10 +3,8 @@ import sys
 import json
 import psutil
 import requests
+import subprocess
 from dotenv import load_dotenv
-
-# Load the environment variables from .env file
-load_dotenv()
 
 def is_valid_json(json_str):
     try:
@@ -15,24 +13,54 @@ def is_valid_json(json_str):
         return False
     return True
 
-def post_data_log_to_server(unique_code_device, log, is_error):
-    api_url = os.environ.get("URL_SERVER_RSSH_LOG")
-    payload = {
-        'unique_code_device': unique_code_device,
-        'log': log,
-        'is_error': is_error
-    }
-    requests.post(api_url, payload)
-
 def get_last_status_rssh_connection(unique_code_device):
     try:
-        api_url = os.environ.get("URL_SERVER_CONNECTION_STATUS")
-        full_api_url = api_url + unique_code_device
-        response = requests.get(full_api_url)
+        base_rest_api = os.environ.get("REST_API_RSSH_CONNECTION_STATUS")
+        full_base_rest_api = base_rest_api + unique_code_device
+        response = requests.get(full_base_rest_api)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        return f"Error occurred: {e}"
+        print(f"Error occurred: {e}")
+        sys.exit(0)
+
+def check_valid_response_last_status_rssh_connection(body_response):
+    body_response_is_json = is_valid_json(body_response)
+    if not body_response_is_json:
+        print(f"Invalid json format")
+        sys.exit(0)
+
+    data = json.loads(body_response)
+    http_code = data["http_code"]
+
+    if 200 != http_code:
+        print(f"Result http is {http_code}")
+        sys.exit(0)
+    return True
+
+def send_rssh_log_to_server(unique_code_device, log, is_error):
+    try:
+        rest_api = os.environ.get("REST_API_RSSH_LOG")
+        payload = {
+            'unique_code_device': unique_code_device,
+            'log': log,
+            'is_error': is_error
+        }
+        requests.post(rest_api, payload)
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred: {e}")
+        sys.exit(0)
+
+def update_status_rssh_connection(unique_code_device, status):
+    try:
+        rest_api = os.environ.get("REST_API_RSSH_CONNECTION_UPDATE")
+        full_rest_api = rest_api + unique_code_device
+        payload = {
+            'status': status
+        }
+        requests.put(full_rest_api, payload)
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred: {e}")
 
 def get_pid_app_by_name(app):
     pidNumber = None
@@ -41,63 +69,50 @@ def get_pid_app_by_name(app):
             pidNumber = proc.info['pid']
     return pidNumber
 
-def kill_app_by_pid(pidNumber, unique_code_device):
+def kill_app_by_pid(unique_code_device, pidNumber):
     try:
         process = psutil.Process(pidNumber)
         process.terminate()
-        message = f"PID {pidNumber} has been terminate"
-        post_data_log_to_server(unique_code_device, message, 'no')
+        log = f"PID {pidNumber} has been terminate"
+        send_rssh_log_to_server(unique_code_device, log, 'no')
     except psutil.NoSuchProcess as e:
         # send status to server
-        message = f"Error: {e}"
-        post_data_log_to_server(unique_code_device, message, 'yes')
+        log = f"Error: {e}"
+        send_rssh_log_to_server(unique_code_device, log, 'yes')
 
+# Load the environment variables from .env file
+load_dotenv()
+
+status_terminate_plink = False
 unique_code_device = os.environ.get("UNIQUE_CODE_DEVICE")
 
-# get last connection status
+# get last connection status by unique code device
 result_get_last_connection_status = get_last_status_rssh_connection(unique_code_device)
-json_string = json.dumps(result_get_last_connection_status)
+result_get_last_connection_status_string = json.dumps(result_get_last_connection_status)
 
-# check response data is json
-isValidJson = is_valid_json(json_string)
+# validate response
+check_valid_response_last_status_rssh_connection(result_get_last_connection_status_string)
 
-if not isValidJson:
-    message = f"Invalid json format"
-    post_data_log_to_server(unique_code_device, message, 'yes')
-    sys.exit(0)
+# parse body response
+data_json = json.loads(result_get_last_connection_status_string)
+last_rssh_connection_status = data_json["data"]["connection_status"]
 
-# Parse the JSON data
-data = json.loads(json_string)
-http_code = data["http_code"]
+if last_rssh_connection_status == "request terminate":
+    status_terminate_plink = True
 
-if 200 != http_code:
-    message = f"Result http is {http_code}"
-    post_data_log_to_server(unique_code_device, message, 'yes')
-    sys.exit(0)
-
-status_terminate_plink_exe = False
-connection_status_rssh = data["data"]["connection_status"]
-
-if connection_status_rssh == "disconnected":
-    status_terminate_plink_exe = True
-
-if connection_status_rssh == "request terminate":
-    status_terminate_plink_exe = True
-
-if not status_terminate_plink_exe:
-    message = "no connection status required for restart"
-    post_data_log_to_server(unique_code_device, message, 'no')
+if not status_terminate_plink:
+    print(status_terminate_plink)
     sys.exit(0)
 
 appName = os.environ.get("PLINK_EXE")
 pidNumber = get_pid_app_by_name(appName)
 
 if pidNumber is None:
-    message = f"PID {appName} not found"
-    post_data_log_to_server(unique_code_device, message, 'yes')
+    log = f"PID {appName} not found"
+    send_rssh_log_to_server(unique_code_device, log, 'yes')
     sys.exit(0)
 
 # kill pid & send status to server
 kill_app_by_pid(pidNumber, unique_code_device)
-message = f"Success kill plink.exe"
-post_data_log_to_server(unique_code_device, message, 'no')
+log = f"Success kill plink.exe"
+send_rssh_log_to_server(unique_code_device, log, 'no')
