@@ -3,10 +3,11 @@ import paramiko
 from dotenv import load_dotenv
 
 # Specify the path to the .env file
-env_path = '/.env'
+path_python = os.environ.get("PATH_DIRECTORY_PYTHON")
+env_file = r"C:\{}\windows-client\.env".format(path_python)
 
 # Load the .env file
-load_dotenv(env_path)
+load_dotenv(env_file)
 
 # Reverse SSH configuration
 remote_host = os.environ.get("SERVER_IP")
