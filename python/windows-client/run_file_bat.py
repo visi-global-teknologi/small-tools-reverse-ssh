@@ -60,7 +60,7 @@ status_re_run_file_bat = False
 unique_code_device = os.environ.get("UNIQUE_CODE_DEVICE")
 
 # get last connection status by unique code device
-result_get_last_connection_status = get_last_status_rssh_connection()
+result_get_last_connection_status = get_last_status_rssh_connection(unique_code_device)
 
 # validate response
 check_valid_response_last_status_rssh_connection(result_get_last_connection_status)
