@@ -69,12 +69,13 @@ unique_code_device = os.environ.get("UNIQUE_CODE_DEVICE")
 
 # get last connection status by unique code device
 result_get_last_connection_status = get_last_status_rssh_connection(unique_code_device)
+result_get_last_connection_status_string = json.dumps(result_get_last_connection_status)
 
 # validate response
-check_valid_response_last_status_rssh_connection(result_get_last_connection_status)
+check_valid_response_last_status_rssh_connection(result_get_last_connection_status_string)
 
 # parse body response
-data_json = json.loads(result_get_last_connection_status)
+data_json = json.loads(result_get_last_connection_status_string)
 last_rssh_connection_status = data_json["data"]["connection_status"]
 
 if last_rssh_connection_status == "disconnect":
