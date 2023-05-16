@@ -84,8 +84,8 @@ if last_rssh_connection_status == "disconnect":
 if last_rssh_connection_status == "terminated":
     status_re_run_file_bat = True
 
-if not last_rssh_connection_status:
-    print(last_rssh_connection_status)
+if not status_re_run_file_bat:
+    print(status_re_run_file_bat)
     sys.exit(0)
 
 try:
