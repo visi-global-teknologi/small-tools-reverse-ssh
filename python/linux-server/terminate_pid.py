@@ -3,9 +3,9 @@ import pytz
 import datetime
 import subprocess
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, String, Enum, DateTime, func
-from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.dialects.mysql import BIGINT
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, Enum, DateTime, func
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -41,7 +41,6 @@ class ConnectionStatusModel(Base):
     id = Column(Integer, autoincrement=True, primary_key=True)
     name = Column(String)
 
-
 # Define the rssh connection model
 class RSSHConnectionModel(Base):
     __tablename__ = "rssh_connections"
@@ -52,7 +51,6 @@ class RSSHConnectionModel(Base):
     connection_status_id = Column(BIGINT(unsigned=True))
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
 
 # Define the cron log model
 class CronLogModel(Base):
@@ -75,7 +73,6 @@ class CronLogModel(Base):
         self.created_at = created_at
         self.updated_at = updated_at
 
-
 # Connect to the database
 session = Session()
 
@@ -90,7 +87,6 @@ def get_time_now():
     # Format the current time as a string
     return current_time.strftime("%Y-%m-%d %H:%M:%S")
 
-
 # create data cron log
 def create_cron_log(session, log, is_error, rssh_connection_id):
     new_data = CronLogModel(
@@ -102,7 +98,6 @@ def create_cron_log(session, log, is_error, rssh_connection_id):
         updated_at=get_time_now(),
     )
     session.add(new_data)
-
 
 # function for terminate process linux by port
 def terminate_process_by_port(session, port, rssh_connection_id):
@@ -136,7 +131,6 @@ def update_status_rss_connection(session, rssh_connection_id, connection_status)
         },
         synchronize_session=False,
     )
-
 
 # Query the rss_connections table with the condition
 connection_status = (

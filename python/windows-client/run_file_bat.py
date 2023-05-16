@@ -91,7 +91,7 @@ if not status_re_run_file_bat:
 try:
     file_bat = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client\reverse_ssh.bat"
     app_runner = os.environ.get("CMD_EXE")
-    log = 'success re run file bat'
+    log = 'success run file bat'
     send_rssh_log_to_server(unique_code_device, log, 'no')
     update_status_rssh_connection(unique_code_device, 'connected')
     subprocess.call([app_runner, '/c', file_bat])
