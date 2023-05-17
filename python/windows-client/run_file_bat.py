@@ -81,7 +81,7 @@ last_rssh_connection_status = data_json["data"]["connection_status"]
 if last_rssh_connection_status == "disconnect":
     status_re_run_file_bat = True
 
-if last_rssh_connection_status == "terminated":
+if last_rssh_connection_status == "plink terminated":
     status_re_run_file_bat = True
 
 if not status_re_run_file_bat:
@@ -99,4 +99,3 @@ try:
 except Exception as e:
     log = f"An error occurred: {e}"
     send_rssh_log_to_server(send_rssh_log_to_server, log, 'yes')
-    update_status_rssh_connection(unique_code_device, 'disconnect')

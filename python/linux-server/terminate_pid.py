@@ -11,10 +11,8 @@ from sqlalchemy import create_engine, Column, Integer, String, Enum, DateTime, f
 load_dotenv()
 
 # request terminate connection status
-terminated_connection_status = os.environ.get("TERMINATED_CONNECTION_STATUS")
-request_terminate_connection_status = os.environ.get(
-    "REQUEST_TERMINATE_CONNECTION_STATUS"
-)
+request_terminate_connection_status = os.environ.get("REQUEST_TERMINATE_CONNECTION_STATUS")
+pid_server_terminated_connection_status = os.environ.get("PID_SERVER_TERMINATED_CONNECTION_STATUS")
 
 # Get the database connection details from environment variables
 db_host = os.environ.get("DB_HOST")
@@ -150,7 +148,7 @@ if rssh_connections:
         id = rsshc.id
         server_port = rsshc.server_port
         terminate_process_by_port(session, server_port, id)
-        update_status_rss_connection(session, id, terminated_connection_status)
+        update_status_rss_connection(session, id, pid_server_terminated_connection_status)
 else:
     print("No request to dismiss PID")
 
