@@ -3,7 +3,6 @@ import sys
 import json
 import psutil
 import requests
-import subprocess
 from dotenv import load_dotenv
 
 def is_valid_json(json_str):
@@ -85,6 +84,8 @@ load_dotenv()
 
 status_terminate_plink = False
 unique_code_device = os.environ.get("UNIQUE_CODE_DEVICE")
+pid_server_terminated_connection_status = os.environ.get("PID_SERVER_TERMINATED_CONNECTION_STATUS")
+plink_terminated_connection_status = os.environ.get("PLINK_TERMINATED_CONNECTION_STATUS")
 
 # get last connection status by unique code device
 result_get_last_connection_status = get_last_status_rssh_connection(unique_code_device)
@@ -97,7 +98,7 @@ check_valid_response_last_status_rssh_connection(result_get_last_connection_stat
 data_json = json.loads(result_get_last_connection_status_string)
 last_rssh_connection_status = data_json["data"]["connection_status"]
 
-if last_rssh_connection_status == "request terminate":
+if last_rssh_connection_status == pid_server_terminated_connection_status:
     status_terminate_plink = True
 
 if not status_terminate_plink:
@@ -116,3 +117,4 @@ if pidNumber is None:
 kill_app_by_pid(pidNumber, unique_code_device)
 log = f"Success kill plink.exe"
 send_rssh_log_to_server(unique_code_device, log, 'no')
+update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
