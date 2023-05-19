@@ -5,6 +5,14 @@ import psutil
 import requests
 from dotenv import load_dotenv
 
+def is_numeric(variable):
+    if isinstance(variable, str):
+        return variable.isdigit()
+    elif isinstance(variable, (int, float)):
+        return True
+    else:
+        return False
+
 def is_valid_json(json_str):
     try:
         json.loads(json_str)
@@ -110,12 +118,17 @@ appName = os.environ.get("PLINK_EXE")
 pidNumber = get_pid_app_by_name(appName)
 
 if pidNumber is None:
-    log = f"PID {appName} not found"
-    send_rssh_log_to_server(unique_code_device, log, 'yes')
-    sys.exit(0)
+    appNameCmd = os.environ.get("CMD_EXE")
+    pidNumber = get_pid_app_by_name(appNameCmd)
 
-# kill pid & send status to server
-kill_app_by_pid(pidNumber, unique_code_device)
-log = f"Success kill plink.exe"
-send_rssh_log_to_server(unique_code_device, log, 'no')
-update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
+# check pid number
+pid_number_is_valid = is_numeric(pidNumber)
+if pid_number_is_valid == True:
+    # kill pid & send status to server
+    kill_app_by_pid(pidNumber, unique_code_device)
+    log = f"Success kill plink.exe"
+    send_rssh_log_to_server(unique_code_device, log, 'no')
+    update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
+else:
+    send_rssh_log_to_server(unique_code_device, 'plink.exe & cmd.exe not running or has been terminated', 'no')
+    sys.exit(0)
