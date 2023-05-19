@@ -78,6 +78,7 @@ def kill_app_by_pid(unique_code_device, pidNumber):
         # send status to server
         log = f"Error: {e}"
         send_rssh_log_to_server(unique_code_device, log, 'yes')
+        sys.exit(0)
 
 # Load the environment variables from .env file
 load_dotenv()
