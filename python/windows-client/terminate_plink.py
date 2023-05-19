@@ -131,4 +131,5 @@ if pid_number_is_valid == True:
     update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
 else:
     send_rssh_log_to_server(unique_code_device, 'plink.exe & cmd.exe not running or has been terminated', 'no')
+    update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
     sys.exit(0)
