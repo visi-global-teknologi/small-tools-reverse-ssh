@@ -122,6 +122,7 @@ if pidNumber is None:
     pidNumber = get_pid_app_by_name(appNameCmd)
 
 # check pid number
+print(pidNumber)
 pid_number_is_valid = is_numeric(pidNumber)
 if pid_number_is_valid == True:
     # kill pid & send status to server
@@ -129,7 +130,9 @@ if pid_number_is_valid == True:
     log = f"Success kill plink.exe"
     send_rssh_log_to_server(unique_code_device, log, 'no')
     update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
+    print(log)
 else:
-    send_rssh_log_to_server(unique_code_device, 'plink.exe & cmd.exe not running or has been terminated', 'no')
+    log = 'plink.exe & cmd.exe not running or has been terminated'
+    send_rssh_log_to_server(unique_code_device, log,  'no')
     update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
-    sys.exit(0)
+    print(log)
