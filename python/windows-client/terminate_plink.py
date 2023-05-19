@@ -126,7 +126,7 @@ print(pidNumber)
 pid_number_is_valid = is_numeric(pidNumber)
 if pid_number_is_valid == True:
     # kill pid & send status to server
-    kill_app_by_pid(pidNumber, unique_code_device)
+    kill_app_by_pid(unique_code_device, pidNumber)
     log = f"Success kill plink.exe"
     send_rssh_log_to_server(unique_code_device, log, 'no')
     update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
