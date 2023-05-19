@@ -1,4 +1,5 @@
 import os
+import sys
 import pytz
 import datetime
 import subprocess
@@ -111,10 +112,11 @@ def terminate_process_by_port(session, port, rssh_connection_id):
         else:
             log = f"No process found with the specified port : {port}"
             create_cron_log(session, log, "yes", rssh_connection_id)
+            sys.exit(0)
     except subprocess.CalledProcessError:
         log = f"Error executing the lsof command : lsof -t -i : {port}"
         create_cron_log(session, log, "yes", rssh_connection_id)
-
+        sys.exit(0)
 
 def update_status_rss_connection(session, rssh_connection_id, connection_status):
     connection_status = (
