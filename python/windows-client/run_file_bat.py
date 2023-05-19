@@ -78,10 +78,10 @@ check_valid_response_last_status_rssh_connection(result_get_last_connection_stat
 data_json = json.loads(result_get_last_connection_status_string)
 last_rssh_connection_status = data_json["data"]["connection_status"]
 
-if last_rssh_connection_status == "disconnect":
+if last_rssh_connection_status == os.environ.get("DISCONNECT_CONNECTION_STATUS"):
     status_re_run_file_bat = True
 
-if last_rssh_connection_status == "plink terminated":
+if last_rssh_connection_status == os.environ.get("PLINK_TERMINATED_CONNECTION_STATUS"):
     status_re_run_file_bat = True
 
 if not status_re_run_file_bat:
@@ -93,7 +93,7 @@ try:
     app_runner = os.environ.get("CMD_EXE")
     log = 'success run file bat'
     send_rssh_log_to_server(unique_code_device, log, 'no')
-    update_status_rssh_connection(unique_code_device, 'connected')
+    update_status_rssh_connection(unique_code_device, os.environ.get("CONNECTED_CONNECTION_STATUS"))
     subprocess.call([app_runner, '/c', file_bat])
     print("done with ok")
 except Exception as e:
