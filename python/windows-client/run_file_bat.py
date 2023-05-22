@@ -61,6 +61,8 @@ def update_status_rssh_connection(unique_code_device, status):
     except requests.exceptions.RequestException as e:
         print(f"Error occurred: {e}")
 
+file_bat = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client\reverse_ssh.bat"
+
 # Load the environment variables from .env file
 load_dotenv()
 
@@ -89,7 +91,6 @@ if not status_re_run_file_bat:
     sys.exit(0)
 
 try:
-    file_bat = r"C:\Users\Administrator\Documents\small-tools-reverse-ssh\python\windows-client\reverse_ssh.bat"
     app_runner = os.environ.get("CMD_EXE")
     log = 'success run file bat'
     send_rssh_log_to_server(unique_code_device, log, 'no')
