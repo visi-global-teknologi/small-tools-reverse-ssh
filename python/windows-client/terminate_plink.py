@@ -117,13 +117,15 @@ if not status_terminate_plink:
 appName = os.environ.get("PLINK_EXE")
 pidNumber = get_pid_app_by_name(appName)
 
-if pidNumber is None:
-    appNameCmd = os.environ.get("CMD_EXE")
-    pidNumber = get_pid_app_by_name(appNameCmd)
+appNameCmd = os.environ.get("CMD_EXE")
+pidNumberCmd = get_pid_app_by_name(appNameCmd)
 
-# check pid number
 print(pidNumber)
+print(pidNumberCmd)
+
 pid_number_is_valid = is_numeric(pidNumber)
+pid_number_cms_is_valid = is_numeric(pidNumberCmd)
+
 if pid_number_is_valid == True:
     # kill pid & send status to server
     kill_app_by_pid(unique_code_device, pidNumber)
@@ -136,3 +138,7 @@ else:
     send_rssh_log_to_server(unique_code_device, log,  'no')
     update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
     print(log)
+
+if pid_number_cms_is_valid == True:
+    process = psutil.Process(pidNumberCmd)
+    process.terminate()
