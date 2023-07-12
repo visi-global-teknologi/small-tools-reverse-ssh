@@ -45,7 +45,6 @@ class RSSHConnectionModel(Base):
     __tablename__ = "rssh_connections"
     id = Column(Integer, autoincrement=True, primary_key=True)
     server_port = Column(String)
-    local_port = Column(String)
     device_id = Column(BIGINT(unsigned=True))
     connection_status_id = Column(BIGINT(unsigned=True))
     created_at = Column(DateTime, default=func.now())
