@@ -1,8 +1,8 @@
 @echo off
 set SERVER_USERNAME=root
 set SERVER_IP=159.89.207.228
-set SERVER_PORT=xxxx
-set SERVER_PASSWORD=xxxx
+set SERVER_PORT=4001
+set SERVER_PASSWORD=H41kalGantengSekali
 set LOCAL_PORT=3389
 set LOCAL_HOST=localhost
 
