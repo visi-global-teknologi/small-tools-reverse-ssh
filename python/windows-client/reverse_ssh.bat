@@ -7,4 +7,4 @@ set LOCAL_PORT=3389
 set LOCAL_HOST=localhost
 
 echo Starting reverse ssh connection....
-echo %SERVER_PASSWORD% | plink.exe -ssh -pw %SERVER_PASSWORD% -N -R %SERVER_PORT%:%LOCAL_HOST%:%LOCAL_PORT% %SERVER_USERNAME%@%SERVER_IP%
+echo %SERVER_PASSWORD% y | plink.exe -ssh -pw %SERVER_PASSWORD% -N -R %SERVER_PORT%:%LOCAL_HOST%:%LOCAL_PORT% %SERVER_USERNAME%@%SERVER_IP%
