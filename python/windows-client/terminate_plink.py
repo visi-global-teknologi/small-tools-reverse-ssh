@@ -94,7 +94,6 @@ load_dotenv()
 status_terminate_plink = False
 unique_code_device = os.environ.get("UNIQUE_CODE_DEVICE")
 pid_server_terminated_connection_status = os.environ.get("PID_SERVER_TERMINATED_CONNECTION_STATUS")
-plink_terminated_connection_status = os.environ.get("PLINK_TERMINATED_CONNECTION_STATUS")
 
 # get last connection status by unique code device
 result_get_last_connection_status = get_last_status_rssh_connection(unique_code_device)
@@ -131,12 +130,10 @@ if pid_number_is_valid == True:
     kill_app_by_pid(unique_code_device, pidNumber)
     log = f"Success kill plink.exe"
     send_rssh_log_to_server(unique_code_device, log, 'no')
-    update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
     print(log)
 else:
     log = 'plink.exe & cmd.exe not running or has been terminated'
     send_rssh_log_to_server(unique_code_device, log,  'no')
-    update_status_rssh_connection(unique_code_device, plink_terminated_connection_status)
     print(log)
 
 if pid_number_cms_is_valid == True:
