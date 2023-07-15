@@ -83,9 +83,6 @@ last_rssh_connection_status = data_json["data"]["connection_status"]
 if last_rssh_connection_status == os.environ.get("DISCONNECT_CONNECTION_STATUS"):
     status_re_run_file_bat = True
 
-if last_rssh_connection_status == os.environ.get("PLINK_TERMINATED_CONNECTION_STATUS"):
-    status_re_run_file_bat = True
-
 if last_rssh_connection_status == os.environ.get("PID_SERVER_TERMINATED_CONNECTION_STATUS"):
     status_re_run_file_bat = True
 
